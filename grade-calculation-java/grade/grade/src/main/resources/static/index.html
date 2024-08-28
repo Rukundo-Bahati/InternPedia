@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../images/MYLOGO.png" type="image/x-icon">
+    <title>Grade Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button, input[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
+
+        #marksFields input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Grade Calculator</h1>
+    <form id="gradeForm">
+        <label for="numberOfSubjects">Enter the number of subjects:</label>
+        <input type="number" id="numberOfSubjects" name="numberOfSubjects" min="1" required>
+        <button type="button" onclick="generateMarksFields()">Generate Marks Fields</button>
+        <div id="marksFields"></div>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="result"></div>
+</div>
+<script>
+    function generateMarksFields() {
+        const numberOfSubjects = document.getElementById('numberOfSubjects').value;
+        const marksFieldsDiv = document.getElementById('marksFields');
+        marksFieldsDiv.innerHTML = ''; // Clear existing fields
+
+        for (let i = 0; i < numberOfSubjects; i++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = 'mark' + i;
+            input.name = 'mark' + i;
+            input.placeholder = 'Marks for subject ' + (i + 1);
+            input.required = true;
+            marksFieldsDiv.appendChild(input);
+        }
+    }
+
+    document.getElementById('gradeForm').onsubmit = function(event) {
+        event.preventDefault();
+
+        const numberOfSubjects = document.getElementById('numberOfSubjects').value;
+        let marks = [];
+
+        for (let i = 0; i < numberOfSubjects; i++) {
+            const markInput = document.getElementById('mark' + i);
+            if (markInput) {
+                marks.push(parseFloat(markInput.value));
+            }
+        }
+
+        fetch('http://localhost:5000/api/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ numberOfSubjects: parseInt(numberOfSubjects), marks })
+        })
+        .then(response => response.json()) // Expecting a JSON response now
+        .then(data => {
+            let resultHtml = '';
+
+            // Display individual subject marks
+            data.subjectMarks.forEach((subjectMark, index) => {
+                resultHtml += `<p>${subjectMark}</p>`;
+            });
+
+            // Display total marks, percentage, and grade
+            resultHtml += `<p>Total Marks = ${data.totalMarks} out of ${data.maxMarks}</p>`;
+            resultHtml += `<p>Percentage = ${data.percentage}%</p>`;
+            resultHtml += `<p>${data.grade}</p>`;
+
+            document.getElementById('result').innerHTML = resultHtml;
+        })
+        .catch(error => console.error('Error:', error));
+    };
+</script>
+
+</body>
+</html>

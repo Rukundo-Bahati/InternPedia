@@ -1,0 +1,56 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #05012f; /* Dark blue background for the whole page */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.converter-container {
+  background-color: #fffd; /* Same dark blue background for the container */
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+input[type="number"], input[type="text"] {
+  padding: 10px;
+  margin: 10px 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ddd; /* Add border to inputs */
+  border-radius: 4px; /* Round corners of inputs */
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #28a745; /* Green background for button */
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px; /* Round corners of button */
+  transition: all 0.3s ease-in;
+}
+
+button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.result-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: dodgerblue; /* Blue background for result container */
+  color: #fff; /* White text on blue background */
+}
+
+.loading-container {
+    margin-top: 20px;
+    padding: 10px;
+    color: #05012f;
+}
